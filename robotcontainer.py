@@ -16,6 +16,8 @@ from subsystems.drive.driveioromispark import DriveIORomiSpark
 
 from subsystems.drive.gyroio import GyroIO
 from subsystems.drive.gyroiopigeon2 import GyroIOPigeon2
+from subsystems.drive.gyroioromi import GyroIORomi
+from wpimath import applyDeadband
 
 import constants
 
@@ -24,6 +26,7 @@ class RobotContainer:
     def __init__(self) -> None:
         match constants.kRobotMode:
             case constants.RobotModes.REAL:
+                #self.drive = Drive(DriveIORomiSpark(), GyroIORomi())
                 self.drive = Drive(DriveIORomiSpark(), GyroIOPigeon2())
             case constants.RobotModes.SIMULATION:
                 self.drive = Drive(DriveIOSim(), GyroIO())
@@ -72,8 +75,8 @@ class RobotContainer:
         self.drive.setDefaultCommand(
             DriveCommands.arcadeDriveClosedLoop(
                 self.drive,
-                lambda: -self.controller.getLeftY(),
-                lambda: -self.controller.getRightX(),
+                lambda: applyDeadband(-self.controller.getLeftY(), 0.1),
+                lambda: applyDeadband(-self.controller.getRightX(), 0.1),
             )
         )
 
@@ -81,8 +84,8 @@ class RobotContainer:
         self.drive.setDefaultCommand(
             DriveCommands.arcadeDriveOpenLoop(
                 self.drive,
-                lambda: -self.controller.getLeftY(),
-                lambda: -self.controller.getRightX(),
+                lambda: applyDeadband(-self.controller.getLeftY(), 0.1),
+                lambda: applyDeadband(-self.controller.getRightX(), 0.1),
             )
         )
 

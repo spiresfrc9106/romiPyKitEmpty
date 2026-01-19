@@ -167,9 +167,9 @@ class MyRobot(LoggedRobot):
 
 
 
-        self.rId = RobotIdentification()
-        self.crashLogger = CrashLogger()
-        self.stt = SegmentTimeTracker()
+        #self.rId = RobotIdentification()
+        #self.crashLogger = CrashLogger()
+        #self.stt = SegmentTimeTracker()
 
 
     def robotPeriodic(self) -> None:
@@ -246,4 +246,4 @@ class MyRobot(LoggedRobot):
 
 
 if __name__ == "__main__":
-    wpilib.run(KitBot2025)
+    wpilib.run(MyRobot)

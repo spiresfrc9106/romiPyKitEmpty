@@ -53,6 +53,9 @@ class DriveIORomiSpark(DriveIO):
         inputs.rightPositionCount = self.rightEncoder.get()
         inputs.leftDriveDistanceInches = -self.leftEncoder.getDistance()
         inputs.rightDriveDistanceInches = -self.rightEncoder.getDistance()
+        inputs.leftPositionRad = inputs.leftDriveDistanceInches * kRadiansPerRevolution / kWheelDiameterInch
+        inputs.rightPositionRad = inputs.rightDriveDistanceInches * kRadiansPerRevolution / kWheelDiameterInch
+
 
         """
         isOk(

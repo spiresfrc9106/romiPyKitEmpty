@@ -9,6 +9,7 @@ class GyroIO:
     class GyroIOInputs:
         connected: bool = False
         yawPosition: Rotation2d = field(default_factory=lambda: Rotation2d())
+        yawPositionDeg: float = 0.0
         yawVelocityDegPerSec: float = 0.0
 
     def updateInputs(self, inputs: GyroIOInputs) -> None:
