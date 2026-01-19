@@ -361,3 +361,15 @@ password: `raspberry`
 ```commandline
 cat /etc/os-release
 ```
+
+# useful commands when learning PyKit
+
+```
+uv run -- robotpy sim
+uv run -- robotpy sim --ws-client
+dir pyLogs
+cp .\pyLogs\pykit_1769.wpilog pykit.log
+$env:LOG_PATH='C:\spires\romireftiny\pykit.log'
+uv run -- robotpy watch
+Remove-Item Env:LOG_PATH
+```
