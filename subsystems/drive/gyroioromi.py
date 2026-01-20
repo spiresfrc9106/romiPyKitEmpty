@@ -12,6 +12,6 @@ class GyroIORomi(GyroIO):
 
     def updateInputs(self, inputs: GyroIO.GyroIOInputs) -> None:
         inputs.connected = True
-        inputs.yawPosition = Rotation2d.fromDegrees(self.romiGyro.getAngle()*kRadiansPerDegree)
+        inputs.yawPosition = Rotation2d.fromDegrees(self.romiGyro.getAngle()/kRadiansPerDegree)
         inputs.yawPositionDeg = self.romiGyro.getAngle() / kRadiansPerDegree
         inputs.yawVelocityDegPerSec = self.romiGyro.getRate() / kRadiansPerDegree

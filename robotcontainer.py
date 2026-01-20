@@ -26,8 +26,8 @@ class RobotContainer:
     def __init__(self) -> None:
         match constants.kRobotMode:
             case constants.RobotModes.REAL:
-                #self.drive = Drive(DriveIORomiSpark(), GyroIORomi())
-                self.drive = Drive(DriveIORomiSpark(), GyroIOPigeon2())
+                self.drive = Drive(DriveIORomiSpark(), GyroIORomi())
+                #self.drive = Drive(DriveIORomiSpark(), GyroIOPigeon2())
             case constants.RobotModes.SIMULATION:
                 self.drive = Drive(DriveIOSim(), GyroIO())
             case constants.RobotModes.REPLAY:
