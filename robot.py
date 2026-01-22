@@ -148,28 +148,9 @@ class MyRobot(LoggedRobot):
         This function is run when the robot is first started up and should be used for any
         initialization code.
         """
-        """
-        TODO
+        pass
 
 
-
-
-
-        # Set up the differential drive controller
-        self.drive = wpilib.drive.DifferentialDrive(self.leftMotor, self.rightMotor)
-
-        # Set up the RomiGyro
-        self.gyro = romi.RomiGyro()
-
-        # Set up the BuiltInAccelerometer
-        self.accelerometer = wpilib.BuiltInAccelerometer()
-        """
-
-
-
-        #self.rId = RobotIdentification()
-        #self.crashLogger = CrashLogger()
-        #self.stt = SegmentTimeTracker()
 
 
     def robotPeriodic(self) -> None:
@@ -179,20 +160,6 @@ class MyRobot(LoggedRobot):
         This runs after the mode specific periodic functions, but before LiveWindow and
         SmartDashboard integrated updating."""
 
-        """
-        TODO
-        x = self.getGyroAngleX()
-        y = self.getGyroAngleY()
-        z = self.getGyroAngleZ()
-        log("driveGyroAngleX", x, "deg")
-        log("driveGyroAngleY", y, "deg")
-        log("driveGyroAngleZ", z, "deg")
-
-        if self.autonomousCommand is not None:
-            log("autonomousCommand", self.autonomousCommand.option_number, "int")
-
-        SignalWrangler().publishPeriodic()
-        """
         # Runs the Scheduler. This is responsible for polling buttons, adding
         # newly-scheduled commands, running already-scheduled commands, removing
         # finished or interrupted commands, and running subsystem periodic() methods.

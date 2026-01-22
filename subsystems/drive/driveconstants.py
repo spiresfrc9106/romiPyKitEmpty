@@ -14,7 +14,7 @@ kRightFollowerCanId = 4
 kCurrentLimit = 60.0
 kCountsPerRevolution = 1440.0 # romi
 kWheelDiameterInch = 2.75591 # romi
-kWheelRadius = (kWheelDiameterInch/2.0) * kMetersPerInch
+kWheelRadiusM = (kWheelDiameterInch / 2.0) * kMetersPerInch
 kMotorReduction = 10.71
 kLeftInverted = False
 kRightInverted = True
@@ -38,7 +38,7 @@ kPPConfig = RobotConfig(
     kRobotMassKg,
     kRobotMOI,
     ModuleConfig(
-        kWheelRadius,
+        kWheelRadiusM,
         kMaxSpeedMetersPerSecond,
         kWheelCOF,
         kGearbox.withReduction(kMotorReduction),

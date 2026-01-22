@@ -13,7 +13,7 @@ class DriveIOSim(DriveIO):
         self.sim = DifferentialDrivetrainSim.createKitbotSim(
             driveconstants.kGearbox,
             driveconstants.kMotorReduction,
-            driveconstants.kWheelRadius,
+            driveconstants.kWheelRadiusM,
         )
 
         self.leftAppliedVolts = 0.0
@@ -30,13 +30,13 @@ class DriveIOSim(DriveIO):
         if self.closedLoop:
             self.leftAppliedVolts = (
                 self.leftPID.calculate(
-                    self.sim.getLeftVelocity() / driveconstants.kWheelRadius,
+                    self.sim.getLeftVelocity() / driveconstants.kWheelRadiusM,
                 )
                 + self.leftFFVolts
             )
             self.rightAppliedVolts = (
                 self.rightPID.calculate(
-                    self.sim.getRightVelocity() / driveconstants.kWheelRadius,
+                    self.sim.getRightVelocity() / driveconstants.kWheelRadiusM,
                 )
                 + self.rightFFVolts
             )
@@ -48,22 +48,22 @@ class DriveIOSim(DriveIO):
         self.sim.update(kRobotPeriod)
 
         inputs.leftPositionRad = (
-            self.sim.getLeftPosition() / driveconstants.kWheelRadius
+            self.sim.getLeftPosition() / driveconstants.kWheelRadiusM
         )
         inputs.leftPositionCount = int(inputs.leftPositionRad / 2.0 / pi)
         inputs.leftVelocityRadPerSec = (
-            self.sim.getLeftVelocity() / driveconstants.kWheelRadius
+            self.sim.getLeftVelocity() / driveconstants.kWheelRadiusM
         )
         inputs.leftDriveDistanceInches = self.sim.getLeftPosition() / kMetersPerInch;
         inputs.leftAppliedVolts = self.leftAppliedVolts
         inputs.leftCurrentAmps = [self.sim.getLeftCurrentDraw()]
 
         inputs.rightPositionRad = (
-            self.sim.getRightPosition() / driveconstants.kWheelRadius
+            self.sim.getRightPosition() / driveconstants.kWheelRadiusM
         )
         inputs.rightPositionCount = int(inputs.rightPositionRad / 2.0 / pi)
         inputs.rightVelocityRadPerSec = (
-            self.sim.getRightVelocity() / driveconstants.kWheelRadius
+            self.sim.getRightVelocity() / driveconstants.kWheelRadiusM
         )
         inputs.rightDriveDistanceInches = self.sim.getRightPosition() / kMetersPerInch;
         inputs.rightAppliedVolts = self.rightAppliedVolts

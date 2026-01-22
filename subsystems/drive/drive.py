@@ -103,16 +103,16 @@ class Drive(Subsystem):
             self.rawGyroRotation = self.gyroInputs.yawPosition
         else:
             twist = self.kinematics.toTwist2d(
-                self.getLeftPosition() - self.lastLeftPosition,
-                self.getRightPosition() - self.lastRightPosition,
+                self.getLeftWheelPositionM() - self.lastLeftPosition,
+                self.getRightWheelPositionM() - self.lastRightPosition,
             )
             self.rawGyroRotation = self.rawGyroRotation + Rotation2d(twist.dtheta)
 
-        self.lastLeftPosition = self.getLeftPosition()
-        self.lastRightPosition = self.getRightPosition()
+        self.lastLeftPosition = self.getLeftWheelPositionM()
+        self.lastRightPosition = self.getRightWheelPositionM()
 
         self.poseEstimator.update(
-            self.rawGyroRotation, self.getLeftPosition(), self.getRightPosition()
+            self.rawGyroRotation, self.getLeftWheelPositionM(), self.getRightWheelPositionM()
         )
 
     def runClosedLoop(
@@ -122,8 +122,8 @@ class Drive(Subsystem):
         self.runClosedLoopParameters(wheelSpeeds.left, wheelSpeeds.right)
 
     def runClosedLoopParameters(self, leftSpeed: float, rightSpeed: float):
-        leftRadPerS = leftSpeed / driveconstants.kWheelRadius
-        rightRadPerS = rightSpeed / driveconstants.kWheelRadius
+        leftRadPerS = leftSpeed / driveconstants.kWheelRadiusM
+        rightRadPerS = rightSpeed / driveconstants.kWheelRadiusM
 
         Logger.recordOutput("Drive/LeftSetpoint", leftRadPerS)
         Logger.recordOutput("Drive/RightSetpoint", rightRadPerS)
@@ -154,27 +154,27 @@ class Drive(Subsystem):
 
     def setPose(self, pose: Pose2d) -> None:
         self.poseEstimator.resetPosition(
-            self.rawGyroRotation, self.getLeftPosition(), self.getRightPosition(), pose
+            self.rawGyroRotation, self.getLeftWheelPositionM(), self.getRightWheelPositionM(), pose
         )
 
     def addVisionMeasurement(self, visionPose: Pose2d, timestamp: float):
         self.poseEstimator.addVisionMeasurement(visionPose, timestamp)
 
     @autolog_output(key="Drive/LeftPosition")
-    def getLeftPosition(self) -> float:
-        return self.inputs.leftPositionRad * driveconstants.kWheelRadius
+    def getLeftWheelPositionM(self) -> float:
+        return self.inputs.leftPositionRad * driveconstants.kWheelRadiusM
 
     @autolog_output(key="Drive/RightPosition")
-    def getRightPosition(self) -> float:
-        return self.inputs.rightPositionRad * driveconstants.kWheelRadius
+    def getRightWheelPositionM(self) -> float:
+        return self.inputs.rightPositionRad * driveconstants.kWheelRadiusM
 
     @autolog_output(key="Drive/LeftVelocity")
     def getLeftVelocity(self) -> float:
-        return self.inputs.leftVelocityRadPerSec * driveconstants.kWheelRadius
+        return self.inputs.leftVelocityRadPerSec * driveconstants.kWheelRadiusM
 
     @autolog_output(key="Drive/RightVelocity")
     def getRightVelocity(self) -> float:
-        return self.inputs.rightVelocityRadPerSec * driveconstants.kWheelRadius
+        return self.inputs.rightVelocityRadPerSec * driveconstants.kWheelRadiusM
 
     def getCharacterizationVelocity(self) -> float:
         return (
@@ -184,7 +184,7 @@ class Drive(Subsystem):
     def getChassisSpeeds(self) -> ChassisSpeeds:
         return self.kinematics.toChassisSpeeds(
             DifferentialDriveWheelSpeeds(
-                driveconstants.kWheelRadius * self.getLeftVelocity(),
-                driveconstants.kWheelRadius * self.getRightVelocity(),
+                driveconstants.kWheelRadiusM * self.getLeftVelocity(),
+                driveconstants.kWheelRadiusM * self.getRightVelocity(),
             )
         )

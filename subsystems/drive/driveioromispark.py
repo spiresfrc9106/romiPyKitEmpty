@@ -16,9 +16,9 @@ class DriveIORomiSpark(DriveIO):
         # The Romi has the left and right motors set to
         # PWM channels 0 and 1 respectively
         self.leftLeader = Spark(0)
-        self.leftLeader.setInverted(True)
+        self.leftLeader.setInverted(False)
         self.rightLeader =Spark(1)
-        self.rightLeader.setInverted(False)
+        self.rightLeader.setInverted(True)
 
         # The Romi has onboard encoders that are hardcoded
         # to use DIO pins 4/5 and 6/7 for the left and right
@@ -37,98 +37,18 @@ class DriveIORomiSpark(DriveIO):
         )
 
 
-
-
-
     def updateInputs(self, inputs: DriveIO.DriveIOInputs) -> None:
-        """
-        TODO
-        isOk(
-            self.leftLeader,
-            self.leftEncoder.getPosition,
-            lambda v: setattr(inputs, "leftPositionRad", v),
-        )
-        """
+
         inputs.leftPositionCount = self.leftEncoder.get()
         inputs.rightPositionCount = self.rightEncoder.get()
-        inputs.leftDriveDistanceInches = -self.leftEncoder.getDistance()
-        inputs.rightDriveDistanceInches = -self.rightEncoder.getDistance()
+        inputs.leftDriveDistanceInches = self.leftEncoder.getDistance()
+        inputs.rightDriveDistanceInches = self.rightEncoder.getDistance()
         inputs.leftPositionRad = inputs.leftDriveDistanceInches * kRadiansPerRevolution / kWheelDiameterInch
         inputs.rightPositionRad = inputs.rightDriveDistanceInches * kRadiansPerRevolution / kWheelDiameterInch
-
-
-        """
-        isOk(
-            self.leftLeader,
-            self.leftEncoder.getVelocity,
-            lambda v: setattr(inputs, "leftVelocityRadPerSec", v),
-        )
-        isOk(
-            self.leftLeader,
-            lambda : -self.leftEncoder.getDistance(),
-            lambda v: setattr(inputs, "leftDriveDistanceInches", v),
-        )
-        isOkMulti(
-            self.leftLeader,
-            [self.leftLeader.getAppliedOutput, self.leftLeader.getBusVoltage],
-            lambda multiResults: setattr(
-                inputs,
-                "leftAppliedVolts",
-                multiResults[0] * multiResults[1],
-            ),
-        )
-        isOkMulti(
-            self.leftLeader,
-            [self.leftLeader.getOutputCurrent],
-            lambda multiResults: setattr(
-                inputs,
-                "leftCurrentAmps",
-                [multiResults[0]],
-            ),
-        )
-        """
-        """
-        TODO
-        isOk(
-            self.rightLeader,
-            self.rightEncoder.getPosition,
-            lambda v: setattr(inputs, "rightPositionRad", v),
-        )
-
-        isOk(
-            self.rightLeader,
-            self.rightEncoder.get,
-            lambda v: setattr(inputs, "rightPositionCount", v),
-        )
-        isOk(
-            self.rightLeader,
-            self.rightEncoder.getVelocity,
-            lambda v: setattr(inputs, "rightVelocityRadPerSec", v),
-        )
-        isOk(
-            self.rightLeader,
-            lambda : -self.righttEncoder.getDistance(),
-            lambda v: setattr(inputs, "rightDriveDistanceInches", v),
-        )
-        isOkMulti(
-            self.rightLeader,
-            [self.rightLeader.getAppliedOutput, self.rightLeader.getBusVoltage],
-            lambda multiResults: setattr(
-                inputs,
-                "rightAppliedVolts",
-                multiResults[0] * multiResults[1],
-            ),
-        )
-        isOkMulti(
-            self.rightLeader,
-            [self.rightLeader.getOutputCurrent, self.rightFollower.getOutputCurrent],
-            lambda multiResults: setattr(
-                inputs,
-                "rightCurrentAmps",
-                [multiResults[0], multiResults[1]],
-            ),
-        )
-        """
+        inputs.leftVelocityRadPerSec = self.leftEncoder.getRate() * kRadiansPerRevolution / kWheelDiameterInch
+        inputs.rightVelocityRadPerSec = self.rightEncoder.getRate() * kRadiansPerRevolution / kWheelDiameterInch
+        inputs.leftAppliedVolts = self.leftLeader.getVoltage()
+        inputs.rightAppliedVolts = self.rightLeader.getVoltage()
 
     def setVoltage(self, leftVolts: float, rightVolts: float) -> None:
         self.leftLeader.setVoltage(leftVolts)

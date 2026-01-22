@@ -18,15 +18,16 @@ class DriveCommands:
         drive: Drive,
         forward: Callable[[], float],
         rotation: Callable[[], float],
+        slowMultiplier: Callable[[], float],
     ) -> Command:
         def run():
-            fwd = deadband(forward(), DriveCommands.deadband)
-            rot = deadband(rotation(), DriveCommands.deadband)
+            fwd = deadband(forward(), DriveCommands.deadband) * slowMultiplier()
+            rot = deadband(rotation(), DriveCommands.deadband) * slowMultiplier()
 
-            speeds = DifferentialDrive.arcadeDriveIK(fwd, rot, True)
+            speeds = DifferentialDrive.arcadeDriveIK(fwd, rot, False)
             drive.runOpenLoop(
-                speeds.left * driveconstants.kMaxSpeedMetersPerSecond,
-                speeds.right * driveconstants.kMaxSpeedMetersPerSecond,
+                speeds.left * 12,
+                speeds.right * 12,
             )
 
         return cmd.run(run, drive).withName("Arcade Drive Open Loop")
@@ -36,10 +37,11 @@ class DriveCommands:
         drive: Drive,
         forward: Callable[[], float],
         rotation: Callable[[], float],
+        slowMultiplier: Callable[[], float],
     ) -> Command:
         def run():
-            fwd = deadband(forward(), DriveCommands.deadband)
-            rot = deadband(rotation(), DriveCommands.deadband)
+            fwd = deadband(forward(), DriveCommands.deadband) * slowMultiplier()
+            rot = deadband(rotation(), DriveCommands.deadband) * slowMultiplier()
 
             speeds = DifferentialDrive.arcadeDriveIK(fwd, rot, True)
             drive.runClosedLoopParameters(

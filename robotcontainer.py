@@ -5,7 +5,7 @@ from commands2.sysid import SysIdRoutine
 from commands2.button import CommandXboxController
 from pykit.networktables.loggeddashboardchooser import LoggedDashboardChooser
 from pathplannerlib.auto import AutoBuilder, NamedCommands
-from wpilib import getDeployDirectory
+from wpilib import getDeployDirectory, XboxController
 
 from commands.drivecommands import DriveCommands
 from subsystems.drive.drive import Drive
@@ -68,15 +68,17 @@ class RobotContainer:
             self.drive.sysIdDynamic(SysIdRoutine.Direction.kReverse),
         )
 
-        self.controller = CommandXboxController(0)
+        self.controller = XboxController(0)
+        self.commandController = CommandXboxController(0)
         self.configureButtonBindingsOpenLoop()
 
     def configureButtonBindingsClosedLoop(self) -> None:
         self.drive.setDefaultCommand(
             DriveCommands.arcadeDriveClosedLoop(
                 self.drive,
-                lambda: applyDeadband(-self.controller.getLeftY(), 0.1),
-                lambda: applyDeadband(-self.controller.getRightX(), 0.1),
+                lambda: -self.controller.getLeftY(),
+                lambda: -self.controller.getRightX(),
+                lambda: 1.0 if (self.controller.getRightBumper()) else 0.25,
             )
         )
 
@@ -84,8 +86,9 @@ class RobotContainer:
         self.drive.setDefaultCommand(
             DriveCommands.arcadeDriveOpenLoop(
                 self.drive,
-                lambda: applyDeadband(-self.controller.getLeftY(), 0.1),
-                lambda: applyDeadband(-self.controller.getRightX(), 0.1),
+                lambda: -self.controller.getLeftY(),
+                lambda: -self.controller.getRightX(),
+                lambda: 1.0 if (self.controller.getRightBumper()) else 0.25,
             )
         )
 
