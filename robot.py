@@ -45,33 +45,18 @@
 #
 
 import os
-import sys
-import math
-
-import romi
-import wpilib
-import wpilib.drive
-
-
 from typing import Optional
-import constants
+import wpilib.drive
+from wpilib.deployinfo import getDeployData
 from pykit.wpilog.wpilogwriter import WPILOGWriter
 from pykit.wpilog.wpilogreader import WPILOGReader
 from pykit.networktables.nt4Publisher import NT4Publisher
 from pykit.loggedrobot import LoggedRobot
 from pykit.logger import Logger
 
+from commands2 import cmd, CommandScheduler, Command, PrintCommand
 
-from commands2 import CommandScheduler, Command, PrintCommand
-
-from commands2.button import Trigger
-
-
-from utils.signalLogging import SignalWrangler
-from utils.signalLogging import log
-from utils.crashLogger import CrashLogger
-from utils.segmentTimeTracker import SegmentTimeTracker
-from utils.robotIdentification import RobotIdentification
+import constants
 
 from wpilib import RobotBase
 from robotcontainer import RobotContainer
@@ -105,7 +90,7 @@ class MyRobot(LoggedRobot):
 
         match constants.kRobotMode:
             case constants.RobotModes.REAL|constants.RobotModes.SIMULATION:
-                deploy_config = wpilib.deployinfo.getDeployData()
+                deploy_config = getDeployData()
                 if deploy_config is not None:
                     Logger.recordMetadata(
                         "Deploy Host", deploy_config.get("deploy-host", "")
@@ -210,6 +195,9 @@ class MyRobot(LoggedRobot):
 
     def simulationPeriodic(self) -> None:
         pass
+
+    def endCompetition(self) -> None:
+        super().endCompetition()
 
 
 if __name__ == "__main__":

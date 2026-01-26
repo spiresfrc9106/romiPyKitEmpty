@@ -1,6 +1,5 @@
 from wpimath.geometry import Rotation2d
 from subsystems.drive.gyroio import GyroIO
-from navx import AHRS
 from romi import RomiGyro
 
 from constants.math import kRadiansPerDegree

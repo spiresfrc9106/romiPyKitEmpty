@@ -37,7 +37,7 @@ class Drive(Subsystem):
         self.inputs = DriveIO.DriveIOInputs()
         self.gyroInputs = GyroIO.GyroIOInputs()
 
-        self.kinematics = DifferentialDriveKinematics(driveconstants.kTrackWidth)
+        self.kinematics = DifferentialDriveKinematics(driveconstants.kTrackWidthM)
 
         self.kS = (
             driveconstants.kSimKs
@@ -53,9 +53,9 @@ class Drive(Subsystem):
         self.poseEstimator = DifferentialDrivePoseEstimator(
             self.kinematics, Rotation2d(), 0.0, 0.0, Pose2d()
         )
-        self.rawGyroRotation = Rotation2d()
-        self.lastLeftPosition = 0.0
-        self.lastRightPosition = 0.0
+        self.rawOdometryRotation = Rotation2d()
+        self.lastLeftDriveDistanceM = 0.0
+        self.lastRightDriveDistanceM = 0.0
 
         AutoBuilder.configure(
             self.getPose,
@@ -100,19 +100,19 @@ class Drive(Subsystem):
         Logger.processInputs("Drive/Gyro", self.gyroInputs)
 
         if self.gyroInputs.connected:
-            self.rawGyroRotation = self.gyroInputs.yawPosition
+            self.rawOdometryRotation = self.gyroInputs.yawPosition
         else:
-            twist = self.kinematics.toTwist2d(
-                self.getLeftWheelPositionM() - self.lastLeftPosition,
-                self.getRightWheelPositionM() - self.lastRightPosition,
+            twistFromOdometry = self.kinematics.toTwist2d(
+                self.getLeftDriveDistanceM() - self.lastLeftDriveDistanceM,
+                self.getRightDriveDistanceM() - self.lastRightDriveDistanceM,
             )
-            self.rawGyroRotation = self.rawGyroRotation + Rotation2d(twist.dtheta)
+            self.rawOdometryRotation = self.rawOdometryRotation + Rotation2d(twistFromOdometry.dtheta)
 
-        self.lastLeftPosition = self.getLeftWheelPositionM()
-        self.lastRightPosition = self.getRightWheelPositionM()
+        self.lastLeftDriveDistanceM = self.getLeftDriveDistanceM()
+        self.lastRightDriveDistanceM = self.getRightDriveDistanceM()
 
         self.poseEstimator.update(
-            self.rawGyroRotation, self.getLeftWheelPositionM(), self.getRightWheelPositionM()
+            self.rawOdometryRotation, self.getLeftDriveDistanceM(), self.getRightDriveDistanceM()
         )
 
     def runClosedLoop(
@@ -154,29 +154,29 @@ class Drive(Subsystem):
 
     def setPose(self, pose: Pose2d) -> None:
         self.poseEstimator.resetPosition(
-            self.rawGyroRotation, self.getLeftWheelPositionM(), self.getRightWheelPositionM(), pose
+            self.rawOdometryRotation, self.getLeftDriveDistanceM(), self.getRightDriveDistanceM(), pose
         )
 
     def addVisionMeasurement(self, visionPose: Pose2d, timestamp: float):
         self.poseEstimator.addVisionMeasurement(visionPose, timestamp)
 
-    @autolog_output(key="Drive/LeftPosition")
-    def getLeftWheelPositionM(self) -> float:
+    @autolog_output(key="Drive/leftDriveDistanceM")
+    def getLeftDriveDistanceM(self) -> float:
         return self.inputs.leftPositionRad * driveconstants.kWheelRadiusM
 
-    @autolog_output(key="Drive/RightPosition")
-    def getRightWheelPositionM(self) -> float:
+    @autolog_output(key="Drive/rightDriveDistanceM")
+    def getRightDriveDistanceM(self) -> float:
         return self.inputs.rightPositionRad * driveconstants.kWheelRadiusM
 
-    @autolog_output(key="Drive/LeftVelocity")
-    def getLeftVelocity(self) -> float:
+    @autolog_output(key="Drive/leftDriveVelocityMPS")
+    def getLeftDriveVelocityMPS(self) -> float:
         return self.inputs.leftVelocityRadPerSec * driveconstants.kWheelRadiusM
 
-    @autolog_output(key="Drive/RightVelocity")
-    def getRightVelocity(self) -> float:
+    @autolog_output(key="Drive/rightDriveVelocityMPS")
+    def getRightDriveVelocityMPS(self) -> float:
         return self.inputs.rightVelocityRadPerSec * driveconstants.kWheelRadiusM
 
-    def getCharacterizationVelocity(self) -> float:
+    def getCharacterizationVelocityRadPerS(self) -> float:
         return (
             self.inputs.leftVelocityRadPerSec + self.inputs.rightVelocityRadPerSec
         ) / 2.0
@@ -184,7 +184,7 @@ class Drive(Subsystem):
     def getChassisSpeeds(self) -> ChassisSpeeds:
         return self.kinematics.toChassisSpeeds(
             DifferentialDriveWheelSpeeds(
-                driveconstants.kWheelRadiusM * self.getLeftVelocity(),
-                driveconstants.kWheelRadiusM * self.getRightVelocity(),
+                driveconstants.kWheelRadiusM * self.getLeftDriveVelocityMPS(),
+                driveconstants.kWheelRadiusM * self.getRightDriveVelocityMPS(),
             )
         )

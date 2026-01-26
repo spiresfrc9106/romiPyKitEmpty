@@ -5,14 +5,14 @@ This is forked from https://github.com/robotpy/examples/tree/main/RomiReference
 This repo python source code based upon [RobotPy](https://robotpy.github.io/docs/) - [RobotPy at readthedocs.io](https://robotpy.readthedocs.io/en/stable/) -
 code for the [Romi]( https://github.com/robotpy/examples/tree/main/RomiReference).
 
-Robotpy add a Python programming environment to the [WPILib](https://docs.wpilib.org/en/stable/) software
+Robotpy added a Python programming environment to the [WPILib](https://docs.wpilib.org/en/stable/) software
 development environment for [FRC](https://www.firstinspires.org/robotics/frc) robots, for Python development. Prior to robotpy, FRC
 robots were programmed in C++ or Java.
 
 ## TL;DR
 
 For those in the "too long; didn't read" camp, here are the steps to get Python program, using RobotPy and WPILib,
-controlling a Romi.  These instructions are for a Windows PC, but similar steps should work on a Linux computer or
+controlling an Romi.  These instructions are for a Windows PC, but similar steps should work on a Linux computer or
 a Mac.
 
 
@@ -33,66 +33,54 @@ a Mac.
       * But stop before "Programming the Romi"
 * Make sure your computer is reconnected to the internet and not your Romi
 * [Download and install Python 3.12](https://www.python.org/downloads/release/python-3122/)
-* Download this repo from https://github.com/spiresfrc9106/romiReferencePython
+* Download this repo from https://github.com/spiresfrc9106/romPyKitTiny
   * If you downloaded as a zip file, unzip into a directory
-    * Open a Windows PowerShell Window
-      * Because RobotPy uses the `pyproject.toml` that is in `romiReferencePython` the Change directory (cd) to the directory where you downloaded and perhaps unzip `romiReferencePython`:
-         ```commandline
-         cd C:\Users\MikeStitt\Downloads\first\sw\romiReferencePython
-         ```
+  * Open a Windows PowerShell Window
+    * Because RobotPy uses the `pyproject.toml` that is in `romPyKitTiny` the Change directory (cd) to the directory where you downloaded and perhaps unzip `romiPyKitTiny`:
+       ```commandline
+       cd C:\Users\MikeStitt\Downloads\first\sw\romiPyKitTiny
+       ```
 
-         ```commandline
-         pwd
-         ```
+       ```commandline
+       pwd
+       ```
     
-         results in:
+       results in:
 
-        ```commandline
-         Path
-         ----
-         C:\Users\MikeStitt\Downloads\first\sw\romiReferencePython 
-         ```
-         for reference, a dir command
-         ```commandline
-         dir
-         ```
+      ```commandline
+       Path
+       ----
+       C:\Users\MikeStitt\Downloads\first\sw\romiPyKitTiny 
+       ```
+       for reference, a dir command
+       ```commandline
+       dir
+       ```
 
-         results in something like this:
+       results in something like this:
 
-         ```commandline
+       ```commandline
+      TODO Fix me
 
-         Directory: C:\Users\MikeStitt\Downloads\first\sw\romiReferencePython
-
-              Mode                 LastWriteTime         Length Name
-              ----                 -------------         ------ ----
-              d-----          1/7/2026   4:12 PM                .idea
-              d-----          1/7/2026   4:57 PM                .simulationLogs
-              d-----          1/7/2026   4:44 PM                .venv
-              d-----          1/7/2026   4:12 PM                tests
-              d-----          1/7/2026   4:35 PM                utils
-              d-----          1/7/2026   4:24 PM                __pycache__
-              -a----          1/7/2026   4:12 PM             98 .gitignore
-              -a----          1/7/2026   4:12 PM          22151 .pylintrc
-              -a----          1/7/2026   4:35 PM              4 networktables.json
-              -a----          1/7/2026   4:46 PM           1452 pyproject.toml
-              -a----          1/7/2026   5:06 PM          16892 README.md
-              -a----          1/7/2026   4:12 PM          10806 robot.py
-              -a----          1/7/2026   4:58 PM           1612 simgui-ds.json
-              -a----          1/7/2026   4:58 PM           1347 simgui-window.json
-              -a----          1/7/2026   4:58 PM            743 simgui.json
-              -a----          1/7/2026   4:35 PM         239608 uv.lock
+       ```
+    * Verify that `uv` is installed
+       ```commandline
+       uv --version
       ```
-      * Verify that your Python command is python 
-         ```commandline
-         python -VV
-         Python 3.12.1 (tags/v3.12.1:2305ca5, Dec  7 2023, 22:03:25) [MSC v.1937 64 bit (AMD64)]
-         ```
-      * Install uv
-        * See https://docs.astral.sh/uv/getting-started/installation/
-      * Use uv to install required python packages
-        ```commandline
-        uv sync
-        ```
+    * Verify that your Python command is python 
+       ```commandline
+       uv run -- python -VV
+       Python 3.12.1 (tags/v3.12.1:2305ca5, Dec  7 2023, 22:03:25) [MSC v.1937 64 bit (AMD64)]
+       ```
+    * Use `uv` to sync your pyproject.toml to your `.venv` directory
+      ```commandline
+      uv sync
+      TODO Fix me
+      ```
+    * Do a `robotpy sync`
+      ```commandline
+      uv run -- robotpy sync
+      ```
   * Connect a **wired-only USB** xbox controller to your PC. This can be confusing because some xbox controllers have
     a USB connector for charging, but are **wireless** xbox controller. These will not work. Logitech xbox controllers
     will work, if the switch on the back of them are switched to the "X" mode using the  "X" or "D" switch on the back
@@ -103,55 +91,26 @@ a Mac.
   * TODO add the steps the first time you power-up your Romi using `http://10.0.0.2/`
   * Go back to your Windows PowerShell Window.
     * This step can be confusing for those that know how to simulate and deploy to full-sized FRC robots. Use RobotPy to
-      launch the WPILib simulator to control the Romi from the Windows PowerShell that is in the `romiReferencePython` directory:
+      launch the WPILib simulator to control the Romi from the Windows PowerShell that is in the `romiPyKitTiny` directory:
       ```commandline
       uv run -- robotpy sim --ws-client
       ```
       resulting in:
       ```commandline
-      17:13:22:640 INFO    : halsim_gui          : WPILib HAL Simulation 2025.3.2.2
-      HAL Extensions: Attempting to load: halsim_gui
-      Simulator GUI Initializing.
-      Simulator GUI Initialized!
-      HAL Extensions: Successfully loaded extension
-      17:13:22:743 INFO    : halsim_ws.client    : WPILib HAL Simulation websim client 2025.3.2.2
-      HAL Extensions: Attempting to load: halsim_ws_client
-      HALSim WS Client Extension Initializing
-      HALSimWS Initialized
-      No WS Message Filters specifiedWill attempt to connect to ws://10.0.0.2:3300/wpilibws
-      Connection Attempt 1
-      HALSim WS Client Extension Initialized
-      HAL Extensions: Successfully loaded extension
-      17:13:22:746 WARNING : pyfrc.physics       : Cannot enable physics support, C:\spires\romireftiny\physics.py not found
-      17:13:22:748 INFO    : wpilib              : RobotPy version 2025.3.2.2
-      17:13:22:748 INFO    : wpilib              : WPILib version 2025.3.2.2
-      17:13:22:748 INFO    : wpilib              : Running with simulated HAL.
-      17:13:22:751 INFO    : nt                  : Listening on NT3 port 1735, NT4 port 5810
-      17:13:22:761 INFO    : nt                  : Got a NT4 connection from 127.0.0.1 port 64293
-      Not loading CameraServerShared
-      roborio SerialNumber=
-      
-      ********** Robot program startup complete **********
-      17:13:22:769 INFO    : nt                  : Got a NT4 connection from 127.0.0.1 port 64300
-      17:13:22:770 INFO    : nt                  : CONNECTED NT4 client 'AdvantageScope@1' (from 127.0.0.1:64300)
-      Default frc::IterativeRobotBase::SimulationPeriodic() method... Override me!
-      DataLog: Logging to './.simulationLogs\FRC_TBD_57fe5827e9ffbedc.wpilog' (772.5 GiB free space)
-      HALSimWS: WebSocket Connected
-      17:13:22:792 INFO    : nt                  : Got a NT4 connection from 127.0.0.1 port 64301
-      17:13:22:792 INFO    : nt                  : CONNECTED RTT client (from 127.0.0.1:64301)
-      17:13:22:823 INFO    : nt                  : Got a NT4 connection from 127.0.0.1 port 64297
-      Button A Released
-      17:13:22:917 INFO    : nt                  : Got a NT4 connection from 127.0.0.1 port 64292
-      17:13:22:980 INFO    : nt                  : Got a NT4 connection from 127.0.0.1 port 64296
-      17:13:23:134 INFO    : nt                  : Got a NT4 connection from 127.0.0.1 port 64295
-      17:13:23:180 INFO    : nt                  : Got a NT4 connection from 127.0.0.1 port 64298
-      17:13:23:698 INFO    : nt                  : Got a NT4 connection from 10.0.0.2 port 44938
-      17:13:23:700 INFO    : nt                  : CONNECTED NT4 client 'multiCameraServer@2' (from 10.0.0.2:44938)
+      TODO Fix me
       ```
       and a "Robot Simulation" window appearing. (TODO add an image of the "Robot Simulation" window.)
   * In the "Robot Simulation", from the "System Joysticks" window, drag and drop "0: Xbox Controller" to the "Joysticks" window, "Joystick[0]" column header.
   * In the "Robot Simulation", in the "Robot Stat" window, select "Teleoperated".
   * Drive your Romi around with your xbox controller joysticks. TODO, on a Logitech controller the rotate left and right is backwards.
+
+# TODO Things to clarify
+
+* one runs a different version of wpilib on the Romi than the PC.
+* The version of wpilib on the romi just drives the motors and reads the encoders and gyro over winsockets.
+* The verison of wpilib on the PC runs in a simulator regardless of whether the Romi is connected or not.
+* how to tell if you are using the simulator to control a real Romi or a simulated Romi.
+
 
 # Notes from Spires2023 and RobotCasserole
 
@@ -360,16 +319,4 @@ password: `raspberry`
 
 ```commandline
 cat /etc/os-release
-```
-
-# useful commands when learning PyKit
-
-```
-uv run -- robotpy sim
-uv run -- robotpy sim --ws-client
-dir pyLogs
-cp .\pyLogs\pykit_1769.wpilog pykit.log
-$env:LOG_PATH='C:\spires\romireftiny\pykit.log'
-uv run -- robotpy watch
-Remove-Item Env:LOG_PATH
 ```

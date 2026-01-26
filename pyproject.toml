@@ -1,9 +1,9 @@
 #
 # Use this configuration file to control what RobotPy packages are installed
-# on your RoboRIO
+# in your project.
 #
 [project]
-name = "romireftinty"
+name = "romipykitsubsystems"
 version = "0.1.0"
 description = "A WPILib Romi Robot"
 readme = "README.md"
@@ -11,7 +11,7 @@ requires-python = ">=3.10"
 
 dependencies = [
     "wpilib>=2026.2.1",
-    "robotpy-pykit==1.0.1",
+    "robotpy-pykit==1.0.2",
     "robotpy-pykit-watch==1.0.0",
     "robotpy-halsim-gui>=2026.2.1",
     "robotpy>=2026.2.1",
@@ -26,6 +26,7 @@ dependencies = [
     "robotpy-halsim-ws",
     "robotpy-native-romi>=2026.2.1",
     "robotpy-romi>=2026.2.1",
+    "coverage>=7.13.1",
 ]
 [tool.robotpy]
 
@@ -42,20 +43,17 @@ components = [
     #"apriltag",
     "commands2",
     # "cscore",
-    "navx",
-    "pathplannerlib",
+    #"navx",
+    #"pathplannerlib",
     # "phoenix5",
-    "phoenix6",
+    #"phoenix6",
     # "photonvision",
     # "playingwithfusion",
-    "rev",
-    # "romi",
+    #"rev",
+    "romi",
     "sim",
     # "xrp",
 ]
 
 # Other pip packages to install
-requires = [
-  "robotpy-pykit==0.2.3",
-]
-
+requires = []

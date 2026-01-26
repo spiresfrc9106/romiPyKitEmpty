@@ -7,7 +7,7 @@ from wpilib import Spark,Encoder
 from constants.math import kRadiansPerRevolution, kSecondsPerMinute
 from util.sparkutil import tryUntilOk, isOk, isOkMulti
 from math import pi
-from subsystems.drive.driveconstants import kWheelDiameterInch, kCountsPerRevolution
+from subsystems.drive.driveconstants import kLeftInverted, kRightInverted, kWheelDiameterInch, kCountsPerRevolution
 
 
 class DriveIORomiSpark(DriveIO):
@@ -16,9 +16,9 @@ class DriveIORomiSpark(DriveIO):
         # The Romi has the left and right motors set to
         # PWM channels 0 and 1 respectively
         self.leftLeader = Spark(0)
-        self.leftLeader.setInverted(False)
-        self.rightLeader =Spark(1)
-        self.rightLeader.setInverted(True)
+        self.leftLeader.setInverted(kLeftInverted)
+        self.rightLeader = Spark(1)
+        self.rightLeader.setInverted(kRightInverted)
 
         # The Romi has onboard encoders that are hardcoded
         # to use DIO pins 4/5 and 6/7 for the left and right

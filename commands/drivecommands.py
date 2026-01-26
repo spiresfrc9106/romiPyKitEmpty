@@ -65,7 +65,7 @@ class DriveCommands:
         def run():
             voltage = timer.get() * DriveCommands.ff_ramp_rate
             drive.runOpenLoop(voltage, voltage)
-            velocitySamples.append(drive.getCharacterizationVelocity())
+            velocitySamples.append(drive.getCharacterizationVelocityRadPerS())
             voltageSamples.append(voltage)
 
         def end(_interrupted: bool):
