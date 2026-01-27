@@ -36,16 +36,16 @@ class RobotContainer:
         auto_folder_path = os.path.join(getDeployDirectory(), "pathplanner", "autos")
         auto_list = os.listdir(auto_folder_path)
 
-        self.testChooser: LoggedDashboardChooser[Command] = LoggedDashboardChooser(
+        self.autoAndTestChooser: LoggedDashboardChooser[Command] = LoggedDashboardChooser(
             "Auto and Test Choices"
         )
         for auto in auto_list:
             auto = auto.removesuffix(".auto")
-            self.testChooser.addOption(
+            self.autoAndTestChooser.addOption(
                 auto,
                 AutoBuilder.buildAuto(auto),
             )
-        self.testChooser.setDefaultOption("Do Nothing", cmd.none())
+        self.autoAndTestChooser.setDefaultOption("Do Nothing", cmd.none())
 
         self.controller = XboxController(0)
 
@@ -53,7 +53,7 @@ class RobotContainer:
         ffCmd = DriveCommands.feedForwardCharacterization(self.drive)
         ffWithWaits = ffWaitCmd.andThen(ffCmd.onlyWhile(lambda: self.controller.getRightBumper()))
 
-        self.testChooser.addOption(
+        self.autoAndTestChooser.addOption(
             "Test - Drive Simple FF Characterization",
             ffWithWaits
         )
@@ -62,7 +62,7 @@ class RobotContainer:
         sysIdQFCmd = self.drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward)
         sysIdQFWithWaits = sysIdQFWaitCmd.andThen(sysIdQFCmd.onlyWhile(lambda: self.controller.getRightBumper()))
 
-        self.testChooser.addOption(
+        self.autoAndTestChooser.addOption(
             "Test - Drive SysId (Quasistatic Forward)",
             sysIdQFWithWaits
         )
@@ -71,7 +71,7 @@ class RobotContainer:
         sysIdQRCmd = self.drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
         sysIdQRWithWaits = sysIdQRWaitCmd.andThen(sysIdQRCmd.onlyWhile(lambda: self.controller.getRightBumper()))
 
-        self.testChooser.addOption(
+        self.autoAndTestChooser.addOption(
             "Test - Drive SysId (Quasistatic Reverse)",
             sysIdQRWithWaits
         )
@@ -80,7 +80,7 @@ class RobotContainer:
         sysIdDFCmd = self.drive.sysIdDynamic(SysIdRoutine.Direction.kForward)
         sysIdDFWithWaits = sysIdDFWaitCmd.andThen(sysIdDFCmd.onlyWhile(lambda: self.controller.getRightBumper()))
 
-        self.testChooser.addOption(
+        self.autoAndTestChooser.addOption(
             "Test - Drive SysId (Dynamic Forward)",
             sysIdDFWithWaits
         )
@@ -90,7 +90,7 @@ class RobotContainer:
         sysIdDRWithWaits = sysIdDRWaitCmd.andThen(sysIdDRCmd.onlyWhile(lambda: self.controller.getRightBumper()))
 
 
-        self.testChooser.addOption(
+        self.autoAndTestChooser.addOption(
             "Test - Drive SysId (Dynamic Reverse)",
             sysIdDRWithWaits
         )
@@ -129,4 +129,4 @@ class RobotContainer:
 
 
     def getAutonomousCommand(self) -> Optional[Command]:
-        return self.testChooser.getSelected()
+        return self.autoAndTestChooser.getSelected()
