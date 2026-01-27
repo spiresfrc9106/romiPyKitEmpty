@@ -11,7 +11,7 @@ from subsystems.drive import driveconstants
 
 class DriveCommands:
     deadband: float = 0.1
-    ff_ramp_rate: float = 0.1  # volts / sec
+    ff_ramp_rate: float = driveconstants.kFfRampRateForTestCharacterization  # volts / sec
 
     @staticmethod
     def arcadeDriveOpenLoop(
@@ -74,8 +74,12 @@ class DriveCommands:
             sumY = sum(voltageSamples)
             sumXY = sum(velocitySamples[i] * voltageSamples[i] for i in range(n))
             sumX2 = sum(v**2 for v in velocitySamples)
-            kS = (sumY * sumX2 - sumX * sumXY) / (n * sumX2 - sumX * sumX)
-            kV = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX)
+            kS = 0.0
+            kV = 0.0
+            divisor = (n * sumX2 - sumX * sumX)
+            if divisor != 0.0:
+                kS = (sumY * sumX2 - sumX * sumXY) / divisor
+                kV = (n * sumXY - sumX * sumY) / divisor
 
             print("************************************************************")
             print(f"Feed Forward Characterization Results: \nkS = {kS}\nkV = {kV}")

@@ -171,6 +171,11 @@ class MyRobot(LoggedRobot):
         """This function is called periodically during autonomous"""
         pass
 
+    def autonomousExit(self):
+        """This function is called after autonomous command is executed"""
+        if self.autonomousCommand is not None:
+            self.autonomousCommand.cancel()
+
 
     def teleopInit(self) -> None:
         # This makes sure that the autonomous stops running when
@@ -188,8 +193,20 @@ class MyRobot(LoggedRobot):
     def testInit(self) -> None:
         CommandScheduler.getInstance().cancelAll()
 
+        self.autonomousCommand = self.robotContainer.getAutonomousCommand()
+
+        if self.autonomousCommand is not None:
+            CommandScheduler.getInstance().schedule(self.autonomousCommand)
+
+
     def testPeriodic(self) -> None:
         pass
+
+    def testExit(self) -> None:
+        """This function is called after test is executed"""
+        if self.autonomousCommand is not None:
+            self.autonomousCommand.cancel()
+
 
     def simulationInit(self) -> None:
         pass

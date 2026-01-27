@@ -82,9 +82,9 @@ class Drive(Subsystem):
 
         self.sysid = SysIdRoutine(
             SysIdRoutine.Config(
-                1,
-                7,
-                10,
+                1.0, # was 1
+                7.0,
+                10.0, # was 10
                 lambda state: Logger.recordOutput(
                     "Drive/SysIdState", sysIdStateToStr(state)
                 ),
