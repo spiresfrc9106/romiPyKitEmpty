@@ -51,6 +51,8 @@ class DriveIORomiSpark(DriveIO):
         inputs.rightAppliedVolts = self.rightLeader.getVoltage()
 
     def setVoltage(self, leftVolts: float, rightVolts: float) -> None:
+        self.leftSetVolts = leftVolts
+        self.rightSetVolts = rightVolts
         self.leftLeader.setVoltage(leftVolts)
         self.rightLeader.setVoltage(rightVolts)
 

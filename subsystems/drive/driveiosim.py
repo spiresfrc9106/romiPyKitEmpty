@@ -71,6 +71,8 @@ class DriveIOSim(DriveIO):
 
     def setVoltage(self, leftVolts: float, rightVolts: float) -> None:
         self.closedLoop = False
+        self.leftSetVolts = leftVolts
+        self.rightSetVolts = rightVolts
         self.leftAppliedVolts = leftVolts
         self.rightAppliedVolts = rightVolts
 

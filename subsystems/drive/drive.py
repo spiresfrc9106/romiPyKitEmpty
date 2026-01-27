@@ -79,6 +79,7 @@ class Drive(Subsystem):
             )
         )
 
+
         self.sysid = SysIdRoutine(
             SysIdRoutine.Config(
                 1,
@@ -89,7 +90,7 @@ class Drive(Subsystem):
                 ),
             ),
             SysIdRoutine.Mechanism(
-                (lambda volts: self.runOpenLoop(volts, volts)), (lambda: None), self
+                (lambda volts: self.runOpenLoop(volts, volts)), (lambda x: None), self
             ),
         )
 

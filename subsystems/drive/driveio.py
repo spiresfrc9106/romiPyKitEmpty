@@ -10,6 +10,7 @@ class DriveIO:
         leftPositionRad: float = 0.0
         leftVelocityRadPerSec: float = 0.0
         leftDriveDistanceInches: float = 0.0
+        leftSetVolts: float = 0.0
         leftAppliedVolts: float = 0.0
         leftCurrentAmps: list[float] = field(default_factory=list)
 
@@ -17,6 +18,7 @@ class DriveIO:
         rightPositionRad: float = 0.0
         rightVelocityRadPerSec: float = 0.0
         rightDriveDistanceInches: float = 0.0
+        rightSetVolts: float = 0.0
         rightAppliedVolts: float = 0.0
         rightCurrentAmps: list[float] = field(default_factory=list)
 
