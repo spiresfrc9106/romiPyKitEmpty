@@ -71,10 +71,12 @@ class DriveIOSim(DriveIO):
 
     def setVoltage(self, leftVolts: float, rightVolts: float) -> None:
         self.closedLoop = False
-        self.leftSetVolts = leftVolts
-        self.rightSetVolts = rightVolts
-        self.leftAppliedVolts = leftVolts
-        self.rightAppliedVolts = rightVolts
+        _leftVolts = float(leftVolts)
+        _rightVolts = float(rightVolts)
+        self.leftSetVolts = _leftVolts
+        self.rightSetVolts = _rightVolts
+        self.leftAppliedVolts = _leftVolts
+        self.rightAppliedVolts = _rightVolts
 
     def setVelocity(
         self,

@@ -123,10 +123,12 @@ class DriveIOTalonFX(DriveIO):
         ]
 
     def setVoltage(self, leftVolts: float, rightVolts: float) -> None:
-        self.leftSetVolts = leftVolts
-        self.rightSetVolts = rightVolts
-        self.leftLeader.set_control(self.voltageRequest.with_output(leftVolts))
-        self.rightLeader.set_control(self.voltageRequest.with_output(rightVolts))
+        _leftVolts = float(leftVolts)
+        _rightVolts = float(rightVolts)
+        self.leftSetVolts = _leftVolts
+        self.rightSetVolts = _rightVolts
+        self.leftLeader.set_control(self.voltageRequest.with_output(_leftVolts))
+        self.rightLeader.set_control(self.voltageRequest.with_output(_rightVolts))
 
     def setVelocity(
         self,

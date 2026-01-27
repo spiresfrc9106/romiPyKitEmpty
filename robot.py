@@ -179,6 +179,7 @@ class MyRobot(LoggedRobot):
         # this line or comment it out.
         if self.autonomousCommand is not None:
             self.autonomousCommand.cancel()
+        self.robotContainer.configureButtonBindingsOpenLoop()
 
     def teleopPeriodic(self) -> None:
         """This function is called periodically during operator control"""

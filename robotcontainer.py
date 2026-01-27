@@ -70,7 +70,17 @@ class RobotContainer:
 
         self.controller = XboxController(0)
         self.commandController = CommandXboxController(0)
-        self.configureButtonBindingsOpenLoop()
+        self.configureButtonBindingsNone()
+
+    def configureButtonBindingsNone(self) -> None:
+        self.drive.setDefaultCommand(
+            DriveCommands.arcadeDriveOpenLoop(
+                self.drive,
+                lambda: 0.0,
+                lambda: 0.0,
+                lambda: 0.25
+            )
+        )
 
     def configureButtonBindingsClosedLoop(self) -> None:
         self.drive.setDefaultCommand(
