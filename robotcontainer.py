@@ -36,40 +36,65 @@ class RobotContainer:
         auto_folder_path = os.path.join(getDeployDirectory(), "pathplanner", "autos")
         auto_list = os.listdir(auto_folder_path)
 
-        self.autoChooser: LoggedDashboardChooser[Command] = LoggedDashboardChooser(
-            "Auto Choices"
+        self.testChooser: LoggedDashboardChooser[Command] = LoggedDashboardChooser(
+            "Auto and Test Choices"
         )
         for auto in auto_list:
             auto = auto.removesuffix(".auto")
-            self.autoChooser.addOption(
+            self.testChooser.addOption(
                 auto,
                 AutoBuilder.buildAuto(auto),
             )
-        self.autoChooser.setDefaultOption("Do Nothing", cmd.none())
-
-        self.autoChooser.addOption(
-            "Drive Simple FF Charactarization",
-            DriveCommands.feedForwardCharacterization(self.drive),
-        )
-        self.autoChooser.addOption(
-            "Drive SysId (Quasistatic Forward)",
-            self.drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward),
-        )
-        self.autoChooser.addOption(
-            "Drive SysId (Quasistatic Reverse)",
-            self.drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse),
-        )
-        self.autoChooser.addOption(
-            "Drive SysId (Dynamic Forward)",
-            self.drive.sysIdDynamic(SysIdRoutine.Direction.kForward),
-        )
-        self.autoChooser.addOption(
-            "Drive SysId (Dynamic Reverse)",
-            self.drive.sysIdDynamic(SysIdRoutine.Direction.kReverse),
-        )
+        self.testChooser.setDefaultOption("Do Nothing", cmd.none())
 
         self.controller = XboxController(0)
-        self.commandController = CommandXboxController(0)
+
+        ffWaitCmd = cmd.waitUntil(lambda: self.controller.getRightBumper())
+        ffCmd = DriveCommands.feedForwardCharacterization(self.drive)
+        ffWithWaits = ffWaitCmd.andThen(ffCmd.onlyWhile(lambda: self.controller.getRightBumper()))
+
+        self.testChooser.addOption(
+            "Test - Drive Simple FF Characterization",
+            ffWithWaits
+        )
+
+        sysIdQFWaitCmd = cmd.waitUntil(lambda: self.controller.getRightBumper())
+        sysIdQFCmd = self.drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward)
+        sysIdQFWithWaits = sysIdQFWaitCmd.andThen(sysIdQFCmd.onlyWhile(lambda: self.controller.getRightBumper()))
+
+        self.testChooser.addOption(
+            "Test - Drive SysId (Quasistatic Forward)",
+            sysIdQFWithWaits
+        )
+
+        sysIdQRWaitCmd = cmd.waitUntil(lambda: self.controller.getRightBumper())
+        sysIdQRCmd = self.drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
+        sysIdQRWithWaits = sysIdQRWaitCmd.andThen(sysIdQRCmd.onlyWhile(lambda: self.controller.getRightBumper()))
+
+        self.testChooser.addOption(
+            "Test - Drive SysId (Quasistatic Reverse)",
+            sysIdQRWithWaits
+        )
+
+        sysIdDFWaitCmd = cmd.waitUntil(lambda: self.controller.getRightBumper())
+        sysIdDFCmd = self.drive.sysIdDynamic(SysIdRoutine.Direction.kForward)
+        sysIdDFWithWaits = sysIdDFWaitCmd.andThen(sysIdDFCmd.onlyWhile(lambda: self.controller.getRightBumper()))
+
+        self.testChooser.addOption(
+            "Test - Drive SysId (Dynamic Forward)",
+            sysIdDFWithWaits
+        )
+
+        sysIdDRWaitCmd = cmd.waitUntil(lambda: self.controller.getRightBumper())
+        sysIdDRCmd = self.drive.sysIdDynamic(SysIdRoutine.Direction.kReverse)
+        sysIdDRWithWaits = sysIdDRWaitCmd.andThen(sysIdDRCmd.onlyWhile(lambda: self.controller.getRightBumper()))
+
+
+        self.testChooser.addOption(
+            "Test - Drive SysId (Dynamic Reverse)",
+            sysIdDRWithWaits
+        )
+
         self.configureButtonBindingsNone()
 
     def configureButtonBindingsNone(self) -> None:
@@ -104,4 +129,4 @@ class RobotContainer:
 
 
     def getAutonomousCommand(self) -> Optional[Command]:
-        return self.autoChooser.getSelected()
+        return self.testChooser.getSelected()

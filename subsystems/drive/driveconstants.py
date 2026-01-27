@@ -45,8 +45,10 @@ match driveBaseVersion:
         kRobotMOI = 6.883
         kWheelCOF = 1.2
 
+        kFfRampRateForTestCharacterization = 2.0
+
     case DriveBaseVersion.XPR:
-        pass
+        kFfRampRateForTestCharacterization = 0.1
 
     case DriveBaseVersion.KITBOT2025:
         kMaxSpeedMetersPerSecond = 4.0
@@ -80,6 +82,8 @@ match driveBaseVersion:
         kRobotMassKg = 74.088
         kRobotMOI = 6.883
         kWheelCOF = 1.2
+
+        kFfRampRateForTestCharacterization = 0.1
 
 
 kPPConfig = RobotConfig(
