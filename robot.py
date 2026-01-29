@@ -78,7 +78,7 @@ os.environ["HALSIMWS_PORT"] = "3300"
 
 class MyRobot(LoggedRobot):
 
-    autonomousCommand: Optional[Command] = None
+    autoOrTestCommand: Optional[Command] = None
     # kCountsPerRevolution = 1440.0
     # kWheelDiameterInch = 2.75591
 
@@ -128,15 +128,11 @@ class MyRobot(LoggedRobot):
         self.robotContainer = RobotContainer()
 
     def robotInit(self) -> None:
-
         """
         This function is run when the robot is first started up and should be used for any
         initialization code.
         """
         pass
-
-
-
 
     def robotPeriodic(self) -> None:
         """This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
@@ -162,10 +158,12 @@ class MyRobot(LoggedRobot):
 
     def autonomousInit(self) -> None:
         """This autonomous runs the autonomous command selected by your RobotContainer class."""
-        self.autonomousCommand = self.robotContainer.getAutonomousCommand()
+        CommandScheduler.getInstance().cancelAll()
 
-        if self.autonomousCommand is not None:
-            CommandScheduler.getInstance().schedule(self.autonomousCommand)
+        self.autoOrTestCommand = self.robotContainer.getAutonomousCommand()
+
+        if self.autoOrTestCommand is not None:
+            CommandScheduler.getInstance().schedule(self.autoOrTestCommand)
 
     def autonomousPeriodic(self) -> None:
         """This function is called periodically during autonomous"""
@@ -173,8 +171,9 @@ class MyRobot(LoggedRobot):
 
     def autonomousExit(self):
         """This function is called after autonomous command is executed"""
-        if self.autonomousCommand is not None:
-            self.autonomousCommand.cancel()
+        if self.autoOrTestCommand is not None:
+            self.autoOrTestCommand.cancel()
+            self.autoOrTestCommand = None
 
 
     def teleopInit(self) -> None:
@@ -182,8 +181,9 @@ class MyRobot(LoggedRobot):
         # teleop starts running. If you want the autonomous to
         # continue until interrupted by another command, remove
         # this line or comment it out.
-        if self.autonomousCommand is not None:
-            self.autonomousCommand.cancel()
+
+        CommandScheduler.getInstance().cancelAll()
+        self.autoOrTestCommand = None
         self.robotContainer.configureButtonBindingsOpenLoop()
 
     def teleopPeriodic(self) -> None:
@@ -193,10 +193,10 @@ class MyRobot(LoggedRobot):
     def testInit(self) -> None:
         CommandScheduler.getInstance().cancelAll()
 
-        self.autonomousCommand = self.robotContainer.getAutonomousCommand()
+        self.autoOrTestCommand = self.robotContainer.getTestCommand()
 
-        if self.autonomousCommand is not None:
-            CommandScheduler.getInstance().schedule(self.autonomousCommand)
+        if self.autoOrTestCommand is not None:
+            CommandScheduler.getInstance().schedule(self.autoOrTestCommand)
 
 
     def testPeriodic(self) -> None:
@@ -204,8 +204,8 @@ class MyRobot(LoggedRobot):
 
     def testExit(self) -> None:
         """This function is called after test is executed"""
-        if self.autonomousCommand is not None:
-            self.autonomousCommand.cancel()
+        if self.autoOrTestCommand is not None:
+            self.autoOrTestCommand.cancel()
 
 
     def simulationInit(self) -> None:
