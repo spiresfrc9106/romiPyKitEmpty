@@ -80,6 +80,7 @@ class DriveIOSim(DriveIO):
 
     def setVelocity(
         self,
+        inputs: DriveIO.DriveIOInputs,
         leftRadPerSec: float,
         rightRadPerSec: float,
         leftFFVolts: float,

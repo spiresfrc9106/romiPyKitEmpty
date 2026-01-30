@@ -30,6 +30,7 @@ class DriveIO:
 
     def setVelocity(
         self,
+        inputs: DriveIOInputs,
         leftRadPerSec: float,
         rightRadPerSec: float,
         leftFFVolts: float,

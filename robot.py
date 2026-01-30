@@ -184,7 +184,8 @@ class MyRobot(LoggedRobot):
 
         CommandScheduler.getInstance().cancelAll()
         self.autoOrTestCommand = None
-        self.robotContainer.configureButtonBindingsOpenLoop()
+        self.robotContainer.configureButtonBindingsClosedLoop()
+        #self.robotContainer.configureButtonBindingsOpenLoop()
 
     def teleopPeriodic(self) -> None:
         """This function is called periodically during operator control"""

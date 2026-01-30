@@ -117,22 +117,28 @@ class Drive(Subsystem):
         )
 
     def runClosedLoop(
-        self, speeds: ChassisSpeeds, _feedForwards: Optional[DriveFeedforwards] = None
+        self, chassisSpeedsMPS: ChassisSpeeds, _feedForwards: Optional[DriveFeedforwards] = None
     ):
-        wheelSpeeds = self.kinematics.toWheelSpeeds(speeds)
-        self.runClosedLoopParameters(wheelSpeeds.left, wheelSpeeds.right)
+        wheelSpeedsMPS = self.kinematics.toWheelSpeeds(chassisSpeedsMPS)
+        self.runClosedLoopParameters(wheelSpeedsMPS.left, wheelSpeedsMPS.right)
 
-    def runClosedLoopParameters(self, leftSpeed: float, rightSpeed: float):
-        leftRadPerS = leftSpeed / driveconstants.kWheelRadiusM
-        rightRadPerS = rightSpeed / driveconstants.kWheelRadiusM
+    def runClosedLoopParameters(self, leftSpeedMPS: float, rightSpeedMPS: float):
+        leftRadPerS = leftSpeedMPS / driveconstants.kWheelRadiusM
+        rightRadPerS = rightSpeedMPS / driveconstants.kWheelRadiusM
 
-        Logger.recordOutput("Drive/LeftSetpoint", leftRadPerS)
-        Logger.recordOutput("Drive/RightSetpoint", rightRadPerS)
+        Logger.recordOutput("Drive/leftSetpointMPS", leftSpeedMPS)
+        Logger.recordOutput("Drive/rightSetpointMPS", leftSpeedMPS)
+
+        Logger.recordOutput("Drive/leftSetpointRPS", leftRadPerS)
+        Logger.recordOutput("Drive/rightSetpointRPS", rightRadPerS)
 
         leftFF = self.kS * sign(leftRadPerS) + self.kV * leftRadPerS
         rightFF = self.kS * sign(rightRadPerS) + self.kV * rightRadPerS
 
-        self.io.setVelocity(leftRadPerS, rightRadPerS, leftFF, rightFF)
+        Logger.recordOutput("Drive/leftFFVolts", leftFF)
+        Logger.recordOutput("Drive/rightFFVolts", rightFF)
+
+        self.io.setVelocity(self.inputs, leftRadPerS, rightRadPerS, leftFF, rightFF)
 
     def runOpenLoop(self, leftV: float, rightV: float) -> None:
         self.io.setVoltage(leftV, rightV)
@@ -173,9 +179,17 @@ class Drive(Subsystem):
     def getLeftDriveVelocityMPS(self) -> float:
         return self.inputs.leftVelocityRadPerSec * driveconstants.kWheelRadiusM
 
+    @autolog_output(key="Drive/leftDriveVelocityIPS")
+    def getLeftDriveVelocityIPS(self) -> float:
+        return self.inputs.leftVelocityRadPerSec * driveconstants.kWheelRadiusInch
+
     @autolog_output(key="Drive/rightDriveVelocityMPS")
     def getRightDriveVelocityMPS(self) -> float:
         return self.inputs.rightVelocityRadPerSec * driveconstants.kWheelRadiusM
+
+    @autolog_output(key="Drive/leftDriveVelocityIPS")
+    def getRightDriveVelocityIPS(self) -> float:
+        return self.inputs.leftVelocityRadPerSec * driveconstants.kWheelRadiusInch
 
     def getCharacterizationVelocityRadPerS(self) -> float:
         return (

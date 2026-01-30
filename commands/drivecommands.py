@@ -10,7 +10,7 @@ from subsystems.drive import driveconstants
 
 
 class DriveCommands:
-    deadband: float = 0.1
+    deadband: float = 0.001 # TODO put me back to 0.1
     ff_ramp_rate: float = driveconstants.kFfRampRateForTestCharacterization  # volts / sec
 
     @staticmethod
@@ -24,11 +24,11 @@ class DriveCommands:
             fwd = deadband(forward(), DriveCommands.deadband) * slowMultiplier()
             rot = deadband(rotation(), DriveCommands.deadband) * slowMultiplier()
 
-            speeds = DifferentialDrive.arcadeDriveIK(fwd, rot, False)
+            bothSideOfChassisForwardSpeeds = DifferentialDrive.arcadeDriveIK(fwd, rot, False)
             drive.runOpenLoop(
-                speeds.left * 12,
-                speeds.right * 12,
-            )
+                bothSideOfChassisForwardSpeeds.left * 12.0,
+                bothSideOfChassisForwardSpeeds.right * 12.0,
+            ) # TODO make 12.0 DRY.
 
         return cmd.run(run, drive).withName("Arcade Drive Open Loop")
 
@@ -38,16 +38,24 @@ class DriveCommands:
         forward: Callable[[], float],
         rotation: Callable[[], float],
         slowMultiplier: Callable[[], float],
+        debugRunOpenLoopVolts: Callable[[], float]
+
     ) -> Command:
         def run():
             fwd = deadband(forward(), DriveCommands.deadband) * slowMultiplier()
             rot = deadband(rotation(), DriveCommands.deadband) * slowMultiplier()
+            bothSideOfChassisForwardSpeeds = DifferentialDrive.arcadeDriveIK(fwd, rot, False)
 
-            speeds = DifferentialDrive.arcadeDriveIK(fwd, rot, True)
-            drive.runClosedLoopParameters(
-                speeds.left * driveconstants.kMaxSpeedMetersPerSecond,
-                speeds.right * driveconstants.kMaxSpeedMetersPerSecond,
-            )
+            if debugRunOpenLoopVolts():
+                drive.runOpenLoop(
+                    bothSideOfChassisForwardSpeeds.left*12.0,
+                    bothSideOfChassisForwardSpeeds.right*12.0
+                ) # TODO make 12.0 DRY.
+            else:
+                drive.runClosedLoopParameters(
+                    bothSideOfChassisForwardSpeeds.left * driveconstants.kMaxSpeedMetersPerSecond,
+                    bothSideOfChassisForwardSpeeds.right * driveconstants.kMaxSpeedMetersPerSecond,
+                )
 
         return cmd.run(run, drive).withName("Arcade Drive Closed Loop")
 

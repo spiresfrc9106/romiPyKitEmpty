@@ -2,32 +2,35 @@ import os
 from typing import Optional
 from commands2 import Command, cmd
 from commands2.sysid import SysIdRoutine
-from commands2.button import CommandXboxController
 from pykit.networktables.loggeddashboardchooser import LoggedDashboardChooser
-from pathplannerlib.auto import AutoBuilder, NamedCommands
+from pathplannerlib.auto import AutoBuilder
 from wpilib import getDeployDirectory, XboxController
 
 from commands.drivecommands import DriveCommands
 from subsystems.drive.drive import Drive
 from subsystems.drive.driveio import DriveIO
 from subsystems.drive.driveiosim import DriveIOSim
-from subsystems.drive.driveiotalonfx import DriveIOTalonFX
 from subsystems.drive.driveioromispark import DriveIORomiSpark
 
 from subsystems.drive.gyroio import GyroIO
-from subsystems.drive.gyroiopigeon2 import GyroIOPigeon2
 from subsystems.drive.gyroioromi import GyroIORomi
-from wpimath import applyDeadband
 
 import constants
 
 
 class RobotContainer:
+
+
     def __init__(self) -> None:
+
+
+        self.controller = XboxController(0)
+
         match constants.kRobotMode:
             case constants.RobotModes.REAL:
                 self.drive = Drive(DriveIORomiSpark(), GyroIORomi())
-                #self.drive = Drive(DriveIORomiSpark(), GyroIOPigeon2())
+                self.drive.io.debugController : XboxController|None = self.controller
+                #TODO self.drive = Drive(DriveIORomiSpark(), GyroIOPigeon2())
             case constants.RobotModes.SIMULATION:
                 self.drive = Drive(DriveIOSim(), GyroIO())
             case constants.RobotModes.REPLAY:
@@ -47,8 +50,6 @@ class RobotContainer:
             )
         self.autoChooser.setDefaultOption("Do Nothing", cmd.none())
 
-        self.controller = XboxController(0)
-
         self.testChooser: LoggedDashboardChooser[Command] = LoggedDashboardChooser(
             "Test Choices"
         )
@@ -58,7 +59,7 @@ class RobotContainer:
         ffWithWaits = ffWaitCmd.andThen(ffCmd.onlyWhile(lambda: self.controller.getRightBumper()))
 
         self.testChooser.addOption(
-            "Test - Drive Simple FF Characterization",
+            "Drive Simple FF Characterization",
             ffWithWaits
         )
 
@@ -67,7 +68,7 @@ class RobotContainer:
         sysIdQFWithWaits = sysIdQFWaitCmd.andThen(sysIdQFCmd.onlyWhile(lambda: self.controller.getRightBumper()))
 
         self.testChooser.addOption(
-            "Test - Drive SysId (Quasistatic Forward)",
+            "Drive SysId (Quasistatic Forward)",
             sysIdQFWithWaits
         )
 
@@ -76,7 +77,7 @@ class RobotContainer:
         sysIdQRWithWaits = sysIdQRWaitCmd.andThen(sysIdQRCmd.onlyWhile(lambda: self.controller.getRightBumper()))
 
         self.testChooser.addOption(
-            "Test - Drive SysId (Quasistatic Reverse)",
+            "Drive SysId (Quasistatic Reverse)",
             sysIdQRWithWaits
         )
 
@@ -85,7 +86,7 @@ class RobotContainer:
         sysIdDFWithWaits = sysIdDFWaitCmd.andThen(sysIdDFCmd.onlyWhile(lambda: self.controller.getRightBumper()))
 
         self.testChooser.addOption(
-            "Test - Drive SysId (Dynamic Forward)",
+            "Drive SysId (Dynamic Forward)",
             sysIdDFWithWaits
         )
 
@@ -94,11 +95,16 @@ class RobotContainer:
         sysIdDRWithWaits = sysIdDRWaitCmd.andThen(sysIdDRCmd.onlyWhile(lambda: self.controller.getRightBumper()))
 
         self.testChooser.addOption(
-            "Test - Drive SysId (Dynamic Reverse)",
+            "Drive SysId (Dynamic Reverse)",
             sysIdDRWithWaits
         )
 
-        self.testChooser.setDefaultOption("Do Nothing", cmd.none())
+        self.testChooser.addOption(
+            "Do Nothing Repeatedly",
+            cmd.idle(self.drive)
+        )
+
+        self.testChooser.setDefaultOption("Do Nothing Once", cmd.none())
 
         self.configureButtonBindingsNone()
 
@@ -114,12 +120,10 @@ class RobotContainer:
 
     def configureButtonBindingsClosedLoop(self) -> None:
         self.drive.setDefaultCommand(
-            DriveCommands.arcadeDriveClosedLoop(
-                self.drive,
-                lambda: -self.controller.getLeftY(),
-                lambda: -self.controller.getRightX(),
-                lambda: 1.0 if (self.controller.getRightBumper()) else 0.25,
-            )
+            DriveCommands.arcadeDriveClosedLoop(self.drive, lambda: -self.controller.getLeftY(),
+                                                lambda: -self.controller.getRightX(),
+                                                lambda: 1.0 if (self.controller.getRightBumper()) else 0.25,
+                                                lambda: False)
         )
 
     def configureButtonBindingsOpenLoop(self) -> None:
