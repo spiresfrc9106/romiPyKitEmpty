@@ -187,9 +187,9 @@ class Drive(Subsystem):
     def getRightDriveVelocityMPS(self) -> float:
         return self.inputs.rightVelocityRadPerSec * driveconstants.kWheelRadiusM
 
-    @autolog_output(key="Drive/leftDriveVelocityIPS")
+    @autolog_output(key="Drive/rightDriveVelocityIPS")
     def getRightDriveVelocityIPS(self) -> float:
-        return self.inputs.leftVelocityRadPerSec * driveconstants.kWheelRadiusInch
+        return self.inputs.rightVelocityRadPerSec * driveconstants.kWheelRadiusInch
 
     def getCharacterizationVelocityRadPerS(self) -> float:
         return (
