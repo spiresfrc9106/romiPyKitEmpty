@@ -4,17 +4,20 @@
 # Open Source Software; you can modify and/or share it under the terms of
 # the WPILib BSD license file in the root directory of this project.
 #
-
+from constants import kRobotUpdatePeriod, kRobotMode, RobotModes
 from pykit.loggedrobot import LoggedRobot
-from pykit.logger import Logger
+from loggerSupport.loggerSupport import startLogger
+from wpilib import run, Timer
 
+
+LoggedRobot.default_period = kRobotUpdatePeriod
 class MyRobot(LoggedRobot):
 
     #########################################################
     ## The Dunder init constructor
     def __init__(self) -> None:
         super().__init__()
-        Logger.start()
+        startLogger(self)
 
     #########################################################
     ## Common initialization for all modes
@@ -78,4 +81,4 @@ class MyRobot(LoggedRobot):
 
 
 if __name__ == "__main__":
-    wpilib.run(MyRobot)
+    run(MyRobot)
