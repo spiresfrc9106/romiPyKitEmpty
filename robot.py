@@ -4,11 +4,10 @@
 # Open Source Software; you can modify and/or share it under the terms of
 # the WPILib BSD license file in the root directory of this project.
 #
-from constants import kRobotUpdatePeriod, kRobotMode, RobotModes
+from constants import kRobotUpdatePeriod
 from pykit.loggedrobot import LoggedRobot
-from loggerSupport.loggerSupport import startLogger
-from wpilib import run, Timer
-
+from utils.loggerSupport import startLogger
+from wpilib import run
 
 LoggedRobot.default_period = kRobotUpdatePeriod
 class MyRobot(LoggedRobot):
