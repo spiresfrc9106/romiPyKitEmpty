@@ -29,27 +29,26 @@ From a terminal window:
   * TODO more details on the above
 * synchronize the python version and packages that the project uses:
   * perhaps: 
-```
-uv python list
-```
+    ```
+    uv python list
+    ```
   * perhaps:
-```
-uv python install 3.14
-```
+    ```
+    uv python install 3.14
+    ```
   * definitely:
-```
-uv sync
-uv run -- robotpy sync
-```
+    ```
+    uv sync
+    uv run -- robotpy sync
+    ```
 ## Run the empty program
 
 Start Elastic
 Start AdvantageScope
 From a terminal window:
 * `cd` to the folder (also called a directory) where `romiPyKitEmpty` is on your computer
-```
-uv run -- robotpy sim
-```
-
+    ```
+    uv run -- robotpy sim
+    ```
 * Connect AdvantageScope to your sim
 * Connect Elastic to your sim
